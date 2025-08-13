@@ -5,16 +5,46 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ auth()->check() && auth()->user()->canManageReports() ? route('admin.dashboard') : route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if(auth()->check() && auth()->user()->canManageReports())
+                        <!-- Admin/Moderator/Investigator Navigation -->
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                        
+                        <x-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">
+                            {{ __('Reports') }}
+                        </x-nav-link>
+                        
+                        @if(auth()->user()->canManageCategories())
+                            <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                                {{ __('Categories') }}
+                            </x-nav-link>
+                        @endif
+                        
+                        @if(auth()->user()->canManageUsers())
+                            <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                                {{ __('Users') }}
+                            </x-nav-link>
+                        @endif
+                        
+                        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'moderator')
+                            <x-nav-link :href="route('admin.analytics.index')" :active="request()->routeIs('admin.analytics.*')">
+                                {{ __('Analytics') }}
+                            </x-nav-link>
+                        @endif
+                    @else
+                        <!-- Regular User Navigation -->
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -23,7 +53,18 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-8 w-8 mr-2">
+                                    <div class="h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium text-white"
+                                         style="background-color: {{ auth()->user()->role_color }};">
+                                        {{ auth()->user()->initials }}
+                                    </div>
+                                </div>
+                                <div class="text-left">
+                                    <div class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</div>
+                                    <div class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</div>
+                                </div>
+                            </div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -67,16 +108,57 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @if(auth()->check() && auth()->user()->canManageReports())
+                <!-- Admin/Moderator/Investigator Mobile Navigation -->
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                
+                <x-responsive-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">
+                    {{ __('Reports') }}
+                </x-responsive-nav-link>
+                
+                @if(auth()->user()->canManageCategories())
+                    <x-responsive-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                        {{ __('Categories') }}
+                    </x-responsive-nav-link>
+                @endif
+                
+                @if(auth()->user()->canManageUsers())
+                    <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
+                        {{ __('Users') }}
+                    </x-responsive-nav-link>
+                @endif
+                
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'moderator')
+                    <x-responsive-nav-link :href="route('admin.analytics.index')" :active="request()->routeIs('admin.analytics.*')">
+                        {{ __('Analytics') }}
+                    </x-responsive-nav-link>
+                @endif
+            @else
+                <!-- Regular User Mobile Navigation -->
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                        <div class="h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium text-white"
+                             style="background-color: {{ auth()->user()->role_color }};">
+                            {{ auth()->user()->initials }}
+                        </div>
+                    </div>
+                    <div class="ml-3">
+                        <div class="font-medium text-base text-gray-800">{{ auth()->user()->name }}</div>
+                        <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
+                        <div class="text-sm text-gray-500">{{ ucfirst(auth()->user()->role) }}</div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">

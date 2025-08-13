@@ -13,21 +13,15 @@ class RoleMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string ...$roles): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!auth()->check()) {
-            return redirect()->route('login');
+        if (!$request->user() || !$request->user()->canManageReports()) {
+            abort(403, 'Unauthorized action.');
         }
 
-        $user = auth()->user();
-
-        if (!$user->is_active) {
-            auth()->logout();
-            return redirect()->route('login')->with('error', 'Your account has been deactivated.');
-        }
-
-        if (!in_array($user->role, $roles)) {
-            abort(403, 'Access denied. Insufficient privileges.');
+        // Check if user has any of the required roles
+        if (!empty($roles) && !in_array($request->user()->role, $roles)) {
+            abort(403, 'Insufficient permissions.');
         }
 
         return $next($request);
