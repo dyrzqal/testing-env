@@ -1,61 +1,432 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Whistleblowing System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive and secure whistleblowing system built with Laravel 12, featuring anonymous reporting, role-based access control, and advanced security measures.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Core Features
+- **Anonymous Reporting**: Secure anonymous submission with unique reference numbers
+- **Role-Based Access Control**: Admin, Moderator, and Investigator roles
+- **Real-time Tracking**: Track report status using reference numbers
+- **File Attachments**: Secure file upload with malware scanning
+- **Comments System**: Internal and external communication on reports
+- **Advanced Analytics**: Comprehensive reporting and analytics dashboard
+- **Multi-level Security**: Rate limiting, input sanitization, and security headers
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Security Features
+- **API Authentication**: Laravel Sanctum with token-based authentication
+- **Rate Limiting**: Configurable rate limiting per endpoint
+- **Input Sanitization**: Automatic XSS protection and input cleaning
+- **Security Headers**: Comprehensive HTTP security headers
+- **File Security**: Malware detection and secure file storage
+- **CSRF Protection**: Cross-site request forgery protection
+- **SQL Injection Protection**: Eloquent ORM and parameterized queries
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### User Roles
 
-## Learning Laravel
+#### Admin
+- Complete system access
+- User management (create, update, delete users)
+- Category management
+- Report management
+- Analytics and reporting
+- System configuration
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### Moderator
+- Report management
+- Category management
+- User performance monitoring
+- Analytics access
+- Report assignment
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+#### Investigator
+- Access to assigned reports only
+- Update report status
+- Add comments and evidence
+- View assigned analytics
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+### Prerequisites
+- PHP 8.2 or higher
+- Composer
+- MySQL/PostgreSQL
+- Node.js (for frontend assets)
+- Git
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Setup Instructions
 
-### Premium Partners
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd whistleblowing-system
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+2. **Install Dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Contributing
+3. **Environment Configuration**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Database Configuration**
+   Update your `.env` file with database credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=whistleblowing
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   ```
 
-## Code of Conduct
+5. **Run Migrations and Seeders**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. **Create Storage Directories**
+   ```bash
+   php artisan storage:link
+   mkdir -p storage/app/private/attachments
+   ```
 
-## Security Vulnerabilities
+7. **Build Frontend Assets**
+   ```bash
+   npm run build
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+8. **Start the Server**
+   ```bash
+   php artisan serve
+   ```
+
+### Default Credentials
+
+After seeding, you can login with these credentials:
+
+- **Admin**: admin@whistleblowing.local / admin123!
+- **Moderator**: moderator@whistleblowing.local / moderator123!
+- **Investigator**: john.inv@whistleblowing.local / investigator123!
+- **Investigator**: sarah.inv@whistleblowing.local / investigator123!
+
+## API Documentation
+
+### Authentication
+
+All protected endpoints require authentication via Bearer token.
+
+#### Login
+```http
+POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@whistleblowing.local",
+    "password": "admin123!"
+}
+```
+
+**Response:**
+```json
+{
+    "message": "Login successful",
+    "user": {
+        "id": 1,
+        "name": "System Administrator",
+        "email": "admin@whistleblowing.local",
+        "role": "admin"
+    },
+    "token": "1|laravel_sanctum_token...",
+    "expires_at": "2024-02-15T10:30:00.000000Z"
+}
+```
+
+#### Logout
+```http
+POST /api/v1/auth/logout
+Authorization: Bearer {token}
+```
+
+### Public Endpoints (No Authentication Required)
+
+#### Submit Anonymous Report
+```http
+POST /api/v1/reports
+Content-Type: multipart/form-data
+
+{
+    "category_id": 1,
+    "title": "Report Title",
+    "description": "Detailed description of the incident",
+    "incident_location": "Office Building A",
+    "incident_date": "2024-01-15",
+    "incident_time": "14:30",
+    "urgency_level": "high",
+    "is_anonymous": true,
+    "attachments[]": [file1, file2]
+}
+```
+
+#### Track Report
+```http
+GET /api/v1/reports/{reference}/track
+```
+
+#### Get Public Categories
+```http
+GET /api/v1/categories/public
+```
+
+### Protected Endpoints
+
+#### Reports Management
+
+**List Reports** (Admin/Moderator/Investigator)
+```http
+GET /api/v1/reports?status=submitted&category_id=1&page=1
+Authorization: Bearer {token}
+```
+
+**Get Report Details**
+```http
+GET /api/v1/reports/{id}
+Authorization: Bearer {token}
+```
+
+**Update Report Status**
+```http
+PATCH /api/v1/reports/{id}/status
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "status": "investigating",
+    "resolution_details": "Investigation in progress"
+}
+```
+
+**Assign Report**
+```http
+PATCH /api/v1/reports/{id}/assign
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "assigned_to_user_id": 3
+}
+```
+
+#### Comments
+
+**Add Comment**
+```http
+POST /api/v1/reports/{id}/comments
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "comment": "Investigation update",
+    "is_internal": true
+}
+```
+
+**Get Comments**
+```http
+GET /api/v1/reports/{id}/comments
+Authorization: Bearer {token}
+```
+
+#### User Management (Admin Only)
+
+**List Users**
+```http
+GET /api/v1/users?role=investigator&search=john
+Authorization: Bearer {token}
+```
+
+**Create User**
+```http
+POST /api/v1/users
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+    "name": "New User",
+    "email": "user@example.com",
+    "password": "SecurePass123!",
+    "password_confirmation": "SecurePass123!",
+    "role": "investigator",
+    "department": "Legal"
+}
+```
+
+#### Analytics (Admin/Moderator)
+
+**Dashboard Stats**
+```http
+GET /api/v1/dashboard/stats
+Authorization: Bearer {token}
+```
+
+**Analytics Overview**
+```http
+GET /api/v1/analytics/overview?from=2024-01-01&to=2024-01-31
+Authorization: Bearer {token}
+```
+
+**Trends Data**
+```http
+GET /api/v1/analytics/trends?period=last_30_days&group_by=day
+Authorization: Bearer {token}
+```
+
+### Rate Limiting
+
+Different endpoints have different rate limits:
+
+- **Authentication**: 5 requests per minute
+- **Public Report Submission**: 10 requests per minute  
+- **Protected Endpoints**: 60 requests per minute
+
+Rate limit headers are included in responses:
+- `X-RateLimit-Limit`: Maximum requests allowed
+- `X-RateLimit-Remaining`: Remaining requests
+- `X-RateLimit-Reset`: Unix timestamp when limit resets
+
+## Database Schema
+
+### Key Tables
+
+#### Users
+- Authentication and authorization
+- Role-based permissions (admin, moderator, investigator)
+- Activity tracking
+
+#### Reports
+- Complete incident information
+- Status tracking and workflow
+- Anonymous and identified reporting
+- File attachments support
+
+#### Categories
+- Configurable report categories
+- Active/inactive status
+- Sorting and organization
+
+#### Comments
+- Internal and external communication
+- User attribution
+- Threaded discussions
+
+## Security Considerations
+
+### File Upload Security
+- File type validation
+- Size limitations (10MB per file)
+- Malware detection
+- Secure storage in private directories
+- Filename sanitization
+
+### Data Protection
+- Input sanitization and validation
+- SQL injection prevention
+- XSS protection
+- CSRF protection
+- Secure password hashing
+
+### API Security
+- Bearer token authentication
+- Rate limiting per endpoint
+- Request validation
+- Security headers
+- CORS configuration
+
+### Anonymous Reporting
+- No tracking of IP addresses for anonymous reports
+- Secure reference number generation
+- Optional contact information
+- Privacy-first design
+
+## Configuration
+
+### Environment Variables
+
+```env
+# Application
+APP_NAME="Whistleblowing System"
+APP_ENV=production
+APP_KEY=base64:...
+APP_DEBUG=false
+APP_URL=https://whistleblowing.example.com
+
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=whistleblowing
+DB_USERNAME=username
+DB_PASSWORD=password
+
+# API Authentication
+SANCTUM_TOKEN_EXPIRATION=43200  # 30 days in minutes
+SANCTUM_STATEFUL_DOMAINS=localhost,127.0.0.1,your-domain.com
+
+# Security
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=true
+SESSION_SECURE_COOKIE=true
+
+# File Storage
+FILESYSTEM_DISK=local
+```
+
+### Security Headers
+
+The system automatically adds security headers:
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `X-XSS-Protection: 1; mode=block`
+- `Content-Security-Policy`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+
+## Deployment
+
+### Production Checklist
+
+1. **Environment Configuration**
+   - Set `APP_ENV=production`
+   - Set `APP_DEBUG=false`
+   - Configure proper database credentials
+   - Set secure session configuration
+
+2. **Security Setup**
+   - Configure HTTPS
+   - Set up proper file permissions
+   - Configure firewall rules
+   - Enable fail2ban for brute force protection
+
+3. **Database Optimization**
+   - Run migrations
+   - Optimize database queries
+   - Set up database backups
+
+4. **Monitoring**
+   - Set up application logging
+   - Configure error reporting
+   - Monitor system performance
+   - Set up uptime monitoring
+
+## Support
+
+For technical support or questions about the whistleblowing system, please contact the system administrators.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This whistleblowing system is proprietary software. All rights reserved.
