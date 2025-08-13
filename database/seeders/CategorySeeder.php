@@ -3,89 +3,80 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
     /**
-     * Run the database seeder.
+     * Run the database seeds.
      */
     public function run(): void
     {
         $categories = [
             [
-                'name' => 'Corruption & Bribery',
-                'description' => 'Reports related to corruption, bribery, kickbacks, and financial misconduct',
+                'name' => 'Financial Misconduct',
+                'description' => 'Reports related to financial fraud, embezzlement, or financial irregularities',
                 'color' => '#EF4444',
-                'sort_order' => 1
+                'is_active' => true,
             ],
             [
-                'name' => 'Fraud & Financial Misconduct',
-                'description' => 'Financial fraud, embezzlement, misuse of company funds',
+                'name' => 'Harassment & Discrimination',
+                'description' => 'Reports of workplace harassment, discrimination, or hostile work environment',
                 'color' => '#F59E0B',
-                'sort_order' => 2
+                'is_active' => true,
             ],
             [
-                'name' => 'Workplace Harassment',
-                'description' => 'Sexual harassment, bullying, discrimination, and hostile work environment',
+                'name' => 'Safety Violations',
+                'description' => 'Reports of safety hazards, workplace accidents, or safety protocol violations',
+                'color' => '#10B981',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Data Privacy',
+                'description' => 'Reports of data breaches, privacy violations, or information security issues',
+                'color' => '#3B82F6',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Environmental Issues',
+                'description' => 'Reports of environmental violations, pollution, or sustainability concerns',
+                'color' => '#8B5CF6',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Corruption',
+                'description' => 'Reports of bribery, kickbacks, or other corrupt practices',
                 'color' => '#DC2626',
-                'sort_order' => 3
+                'is_active' => true,
             ],
             [
-                'name' => 'Safety & Health Violations',
-                'description' => 'Workplace safety violations, health hazards, environmental concerns',
-                'color' => '#059669',
-                'sort_order' => 4
-            ],
-            [
-                'name' => 'Data & Privacy Breach',
-                'description' => 'Unauthorized access to data, privacy violations, information security breaches',
+                'name' => 'Quality Control',
+                'description' => 'Reports of product defects, quality issues, or manufacturing problems',
                 'color' => '#7C3AED',
-                'sort_order' => 5
+                'is_active' => true,
             ],
             [
-                'name' => 'Ethics & Compliance',
-                'description' => 'Violations of company policies, ethics code, or legal compliance',
-                'color' => '#2563EB',
-                'sort_order' => 6
+                'name' => 'Regulatory Compliance',
+                'description' => 'Reports of regulatory violations or compliance failures',
+                'color' => '#059669',
+                'is_active' => true,
             ],
             [
                 'name' => 'Conflict of Interest',
-                'description' => 'Undisclosed conflicts of interest, nepotism, favoritism',
-                'color' => '#DB2777',
-                'sort_order' => 7
+                'description' => 'Reports of conflicts of interest or ethical violations',
+                'color' => '#D97706',
+                'is_active' => true,
             ],
             [
-                'name' => 'Theft & Misuse of Resources',
-                'description' => 'Theft of company property, misuse of company resources or time',
-                'color' => '#EA580C',
-                'sort_order' => 8
-            ],
-            [
-                'name' => 'Regulatory Violations',
-                'description' => 'Violations of industry regulations, licensing requirements',
-                'color' => '#0891B2',
-                'sort_order' => 9
-            ],
-            [
-                'name' => 'Other Misconduct',
-                'description' => 'Other types of misconduct not covered by the above categories',
+                'name' => 'Other',
+                'description' => 'Other types of reports not covered by specific categories',
                 'color' => '#6B7280',
-                'sort_order' => 10
-            ]
+                'is_active' => true,
+            ],
         ];
 
         foreach ($categories as $category) {
-            Category::create([
-                'name' => $category['name'],
-                'slug' => Str::slug($category['name']),
-                'description' => $category['description'],
-                'color' => $category['color'],
-                'sort_order' => $category['sort_order'],
-                'is_active' => true
-            ]);
+            Category::create($category);
         }
     }
 }
