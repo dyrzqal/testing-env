@@ -35,8 +35,8 @@ class UserController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('department', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('department', 'like', "%{$search}%");
             });
         }
 
@@ -77,8 +77,8 @@ class UserController extends Controller
     {
         $user->load(['assignedReports' => function ($query) {
             $query->select(['id', 'title', 'status', 'assigned_to_user_id', 'created_at'])
-                  ->latest()
-                  ->take(5);
+                ->latest()
+                ->take(5);
         }]);
 
         return response()->json(['user' => $user->makeHidden(['password'])]);
@@ -90,7 +90,7 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         $userData = $request->validated();
-        
+
         if (isset($userData['password'])) {
             $userData['password'] = Hash::make($userData['password']);
         }
@@ -156,7 +156,7 @@ class UserController extends Controller
     public function resetPassword(Request $request, User $user): JsonResponse
     {
         $newPassword = Str::random(12);
-        
+
         $user->update([
             'password' => Hash::make($newPassword)
         ]);

@@ -4,12 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $categories = [
@@ -75,8 +74,25 @@ class CategorySeeder extends Seeder
             ],
         ];
 
-        foreach ($categories as $category) {
-            Category::create($category);
+        foreach ($categories as $data) {
+            $base = Str::slug($data['name']);
+            $slug = $base;
+            $i = 1;
+
+            // ensure unique slug
+            while (DB::table('categories')->where('slug', $slug)->exists()) {
+                $slug = $base . '-' . $i++;
+            }
+
+            Category::updateOrCreate(
+                ['slug' => $slug],
+                [
+                    'name'        => $data['name'],
+                    'description' => $data['description'],
+                    'color'       => $data['color'],
+                    'is_active'   => $data['is_active'],
+                ]
+            );
         }
     }
 }

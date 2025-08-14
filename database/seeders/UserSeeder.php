@@ -51,7 +51,7 @@ class UserSeeder extends Seeder
             'name' => 'Regular User',
             'email' => 'user@wbs.com',
             'password' => Hash::make('password'),
-            'role' => 'user',
+            'role' => 'investigator',
             'is_active' => true,
             'department' => 'General Department',
             'email_verified_at' => now(),
