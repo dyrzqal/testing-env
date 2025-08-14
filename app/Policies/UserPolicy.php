@@ -63,11 +63,19 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can toggle status.
+     * Determine whether the user can manage categories.
      */
-    public function toggleStatus(User $user, User $model): bool
+    public function manageCategories(User $user): bool
     {
-        return $user->canManageUsers() && $user->id !== $model->id;
+        return $user->canManageCategories();
+    }
+
+    /**
+     * Determine whether the user can manage users.
+     */
+    public function manageUsers(User $user): bool
+    {
+        return $user->canManageUsers();
     }
 
     /**
@@ -75,7 +83,7 @@ class UserPolicy
      */
     public function viewAnalytics(User $user): bool
     {
-        return in_array($user->role, ['admin', 'moderator']);
+        return $user->isAdmin() || $user->isModerator();
     }
 
     /**
@@ -83,6 +91,6 @@ class UserPolicy
      */
     public function exportData(User $user): bool
     {
-        return in_array($user->role, ['admin', 'moderator']);
+        return $user->isAdmin() || $user->isModerator();
     }
 }
