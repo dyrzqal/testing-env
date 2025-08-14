@@ -21,9 +21,12 @@ class RoleMiddleware
         }
 
         $user = Auth::user();
-        
-        // Check if user has any of the required roles
-        if (!in_array($user->role, $roles)) {
+
+        $userRole = strtolower($user->role);
+        $roles = array_map('strtolower', $roles);
+
+        // Check if user has any of the required roles (case-insensitive)
+        if (!in_array($userRole, $roles)) {
             abort(403, 'Unauthorized action.');
         }
 
