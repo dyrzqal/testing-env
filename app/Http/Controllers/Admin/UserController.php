@@ -72,12 +72,15 @@ class UserController extends Controller
     {
         $this->authorize('manageUsers');
         
-        $user->load(['assignedReports' => function($query) {
-            $query->latest()->paginate(10);
-        }, 'reportComments' => function($query) {
-            $query->latest()->paginate(10);
-        }]);
-        
+        $user->load([
+            'assignedReports' => function ($query) {
+                $query->latest()->take(10);
+            },
+            'reportComments' => function ($query) {
+                $query->latest()->take(10);
+            }
+        ]);
+
         return view('admin.users.show', compact('user'));
     }
 
