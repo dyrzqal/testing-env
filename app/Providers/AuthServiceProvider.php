@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Policies\ReportPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,5 +27,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        Gate::define('manageCategories', [UserPolicy::class, 'manageCategories']);
+        Gate::define('manageUsers', [UserPolicy::class, 'manageUsers']);
+        Gate::define('viewAnalytics', [UserPolicy::class, 'viewAnalytics']);
+        Gate::define('exportData', [UserPolicy::class, 'exportData']);
     }
 }

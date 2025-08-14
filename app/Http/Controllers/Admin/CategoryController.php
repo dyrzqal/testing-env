@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -47,6 +47,7 @@ class CategoryController extends Controller
 
         Category::create([
             'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'description' => $request->description,
             'color' => $request->color ?? '#3B82F6',
             'is_active' => $request->has('is_active'),
@@ -64,9 +65,9 @@ class CategoryController extends Controller
         $this->authorize('manageCategories');
         
         $category->load(['reports' => function($query) {
-            $query->latest()->paginate(10);
+            $query->latest()->take(10);
         }]);
-        
+
         return view('admin.categories.show', compact('category'));
     }
 
@@ -96,6 +97,7 @@ class CategoryController extends Controller
 
         $category->update([
             'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'description' => $request->description,
             'color' => $request->color ?? '#3B82F6',
             'is_active' => $request->has('is_active'),
