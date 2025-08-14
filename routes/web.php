@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PublicReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,27 +32,48 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     
     // Reports Management (All roles can access)
-    Route::middleware('role:admin,moderator,investigator')->group(function () {
-        Route::resource('reports', AdminReportController::class);
-        Route::patch('reports/{report}/status', [AdminReportController::class, 'updateStatus'])->name('reports.status.update');
-        Route::post('reports/{report}/comments', [AdminReportController::class, 'addComment'])->name('reports.comments.store');
-        Route::get('reports/{report}/attachments/{attachment}/download', [AdminReportController::class, 'downloadAttachment'])->name('reports.attachments.download');
+    Route::middleware('role:admin,moderator,investigator')->prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [AdminReportController::class, 'index'])->name('index');
+        Route::get('/create', [AdminReportController::class, 'create'])->name('create');
+        Route::post('/', [AdminReportController::class, 'store'])->name('store');
+        Route::get('/{report}', [AdminReportController::class, 'show'])->name('show');
+        Route::get('/{report}/edit', [AdminReportController::class, 'edit'])->name('edit');
+        Route::put('/{report}', [AdminReportController::class, 'update'])->name('update');
+        Route::delete('/{report}', [AdminReportController::class, 'destroy'])->name('destroy');
+        Route::patch('/{report}/status', [AdminReportController::class, 'updateStatus'])->name('status.update');
+        Route::post('/{report}/comments', [AdminReportController::class, 'addComment'])->name('comments.store');
+        Route::get('/{report}/attachments/{attachment}/download', [AdminReportController::class, 'downloadAttachment'])->name('attachments.download');
     });
     
     // Categories Management (Admin and Moderators only)
     Route::middleware('role:admin,moderator')->prefix('categories')->name('categories.')->group(function () {
-        Route::get('/', [AdminReportController::class, 'categories'])->name('index');
-        Route::post('/', [AdminReportController::class, 'storeCategory'])->name('store');
-        Route::patch('/{category}', [AdminReportController::class, 'updateCategory'])->name('update');
-        Route::delete('/{category}', [AdminReportController::class, 'destroyCategory'])->name('destroy');
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{category}', [CategoryController::class, 'show'])->name('show');
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::patch('/{category}/status', [CategoryController::class, 'toggleStatus'])->name('status.toggle');
     });
     
     // User Management (Admin only)
     Route::middleware('role:admin')->prefix('users')->name('users.')->group(function () {
-        Route::get('/', [AdminReportController::class, 'users'])->name('index');
-        Route::post('/', [AdminReportController::class, 'storeUser'])->name('store');
-        Route::patch('/{user}', [AdminReportController::class, 'updateUser'])->name('update');
-        Route::patch('/{user}/status', [AdminReportController::class, 'toggleUserStatus'])->name('toggle-status');
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('/{user}', [UserController::class, 'show'])->name('show');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        Route::patch('/{user}/status', [UserController::class, 'toggleStatus'])->name('status.toggle');
+        Route::patch('/{user}/password', [UserController::class, 'changePassword'])->name('password.change');
+    });
+    
+    // Profile Management (All authenticated users)
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::patch('/update', [UserController::class, 'updateProfile'])->name('update');
+        Route::patch('/password', [UserController::class, 'updatePassword'])->name('password.update');
     });
     
     // Analytics & Reports (Admin and Moderators only)

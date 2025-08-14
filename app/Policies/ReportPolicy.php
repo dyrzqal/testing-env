@@ -20,7 +20,15 @@ class ReportPolicy
      */
     public function view(User $user, Report $report): bool
     {
-        return $user->canManageReports();
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+        
+        if ($user->isInvestigator()) {
+            return $report->assigned_to_user_id === $user->id;
+        }
+        
+        return false;
     }
 
     /**
@@ -36,7 +44,15 @@ class ReportPolicy
      */
     public function update(User $user, Report $report): bool
     {
-        return $user->canManageReports();
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+        
+        if ($user->isInvestigator()) {
+            return $report->assigned_to_user_id === $user->id;
+        }
+        
+        return false;
     }
 
     /**
@@ -64,26 +80,42 @@ class ReportPolicy
     }
 
     /**
-     * Determine whether the user can update the status.
+     * Determine whether the user can comment on the report.
      */
-    public function updateStatus(User $user, Report $report): bool
+    public function comment(User $user, Report $report): bool
     {
-        return $user->canManageReports();
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+        
+        if ($user->isInvestigator()) {
+            return $report->assigned_to_user_id === $user->id;
+        }
+        
+        return false;
     }
 
     /**
-     * Determine whether the user can add comments.
+     * Determine whether the user can assign the report.
      */
-    public function addComment(User $user, Report $report): bool
+    public function assign(User $user, Report $report): bool
     {
-        return $user->canManageReports();
+        return $user->isAdmin() || $user->isModerator();
     }
 
     /**
-     * Determine whether the user can download attachments.
+     * Determine whether the user can change report status.
      */
-    public function downloadAttachment(User $user, Report $report): bool
+    public function changeStatus(User $user, Report $report): bool
     {
-        return $user->canManageReports();
+        if ($user->isAdmin() || $user->isModerator()) {
+            return true;
+        }
+        
+        if ($user->isInvestigator()) {
+            return $report->assigned_to_user_id === $user->id;
+        }
+        
+        return false;
     }
 }
