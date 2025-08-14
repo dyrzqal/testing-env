@@ -68,32 +68,34 @@ class User extends Authenticatable
     // Role checking methods
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return strtolower($this->role) === 'admin';
     }
 
     public function isModerator(): bool
     {
-        return $this->role === 'moderator';
+        return strtolower($this->role) === 'moderator';
     }
 
     public function isInvestigator(): bool
     {
-        return $this->role === 'investigator';
+        return strtolower($this->role) === 'investigator';
     }
 
     public function canManageReports(): bool
     {
-        return in_array($this->role, ['admin', 'moderator', 'investigator']);
+        $role = strtolower($this->role);
+        return in_array($role, ['admin', 'moderator', 'investigator']);
     }
 
     public function canManageUsers(): bool
     {
-        return $this->role === 'admin';
+        return strtolower($this->role) === 'admin';
     }
 
     public function canManageCategories(): bool
     {
-        return in_array($this->role, ['admin', 'moderator']);
+        $role = strtolower($this->role);
+        return in_array($role, ['admin', 'moderator']);
     }
 
     // Scopes
